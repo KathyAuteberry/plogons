@@ -3,7 +3,7 @@
     "Author": "FluffySim contributors; Anomek and AnoMech contributors",
     "Name": "FluffySim",
     "InternalName": "FluffySim",
-    "AssemblyVersion": "3.1.0.0",
+    "AssemblyVersion": "3.1.1.0",
     "MinimumDalamudVersion": "15.0.3.5",
     "Description": "FluffySim \u2014 an FFXIV mechanic simulator extending AnoMech with playable DSR and FRU Ultimate encounters. Based on AnoMech by Anomek and contributors.",
     "ApplicableVersion": "any",
@@ -23,9 +23,9 @@
     "IconUrl": "https://raw.githubusercontent.com/KathyAuteberry/FluffySim/master/images/icon.png",
     "Punchline": "Solo Ultimate practice with DSR Elemental and FRU Mana strategies.",
     "AcceptsFeedback": true,
-    "DownloadLinkInstall": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.1.0.0/FluffySim-3.1.0.0.zip",
-    "DownloadLinkUpdate": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.1.0.0/FluffySim-3.1.0.0.zip",
-    "DownloadLinkTesting": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.1.0.0/FluffySim-3.1.0.0.zip",
+    "DownloadLinkInstall": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.1.1.0/FluffySim-3.1.1.0.zip",
+    "DownloadLinkUpdate": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.1.1.0/FluffySim-3.1.1.0.zip",
+    "DownloadLinkTesting": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.1.1.0/FluffySim-3.1.1.0.zip",
     "IsHide": false,
     "IsTestingExclusive": false
   }
