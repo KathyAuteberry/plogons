@@ -7,6 +7,7 @@ https://raw.githubusercontent.com/KathyAuteberry/plogons/master/mostly-harmless.
 The bootstrap array is empty until the first verified release is published. ZIPs live in
 GitHub Releases of their source repositories, never here. FluffySim releases update their
 entry automatically after tests and publication; other plugins coexist by unique InternalName.
+Kotodama releases do the same with `update_manifest.py --plugin Kotodama`.
 
 For manual updates/recovery, use the Jujutsu and updater commands in [AGENTS.md](AGENTS.md).
 Run `python -m unittest discover -s tools/tests` before committing. Inspect diffs to ensure

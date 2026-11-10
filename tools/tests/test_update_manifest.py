@@ -63,5 +63,52 @@ class ManifestTests(unittest.TestCase):
             module.update(self.archive(), '2.0.0.0')
 
 
+    def kotodama_archive(self, version='0.1.0.0', **overrides):
+        entry = dict(Name='Kotodama', InternalName='Kotodama', AssemblyVersion=version,
+                     Author='Kathy Auteberry', Description='Translation', DalamudApiLevel=15)
+        entry.update(overrides)
+        path = module.ROOT / 'kotodama.zip'
+        with zipfile.ZipFile(path, 'w') as z:
+            z.writestr('Kotodama.dll', b'example')
+            z.writestr('Kotodama.json', json.dumps(entry))
+        return path
+
+    def test_kotodama_entry_uses_its_own_repository(self):
+        module.update(self.kotodama_archive(), '0.1.0.0', 'Kotodama')
+        entry = json.loads(self.path.read_text())[1]
+        self.assertEqual(entry['InternalName'], 'Kotodama')
+        url = 'https://github.com/KathyAuteberry/Kotodama/releases/download/v0.1.0.0/Kotodama-0.1.0.0.zip'
+        for field in ('DownloadLinkInstall', 'DownloadLinkUpdate', 'DownloadLinkTesting'):
+            self.assertEqual(entry[field], url)
+
+    def test_plugins_coexist_and_updates_touch_only_their_entry(self):
+        module.update(self.archive(), '2.0.0.0')
+        module.update(self.kotodama_archive(), '0.1.0.0', 'Kotodama')
+        before = json.loads(self.path.read_text())
+        module.update(self.archive('2.1.0.0'), '2.1.0.0')
+        after = json.loads(self.path.read_text())
+        self.assertEqual([e['InternalName'] for e in after], ['Other', 'FluffySim', 'Kotodama'])
+        self.assertEqual(after[0], self.other)
+        self.assertEqual(after[2], before[2])
+        self.assertEqual(after[1]['AssemblyVersion'], '2.1.0.0')
+
+    def test_wrong_plugin_for_archive_is_rejected(self):
+        original = self.path.read_bytes()
+        for archive, plugin in [(self.kotodama_archive(), 'FluffySim'), (self.archive(), 'Kotodama')]:
+            with self.assertRaises(ValueError):
+                module.update(archive, archive.name.startswith('kotodama') and '0.1.0.0' or '2.0.0.0', plugin)
+            self.assertEqual(self.path.read_bytes(), original)
+
+    def test_unknown_plugin_rejected(self):
+        with self.assertRaises(ValueError):
+            module.update(self.archive(), '2.0.0.0', 'EchoXIV')
+
+    def test_kotodama_downgrade_rejected(self):
+        module.update(self.kotodama_archive('0.2.0.0'), '0.2.0.0', 'Kotodama')
+        original = self.path.read_bytes()
+        with self.assertRaises(ValueError):
+            module.update(self.kotodama_archive('0.1.0.0'), '0.1.0.0', 'Kotodama')
+        self.assertEqual(self.path.read_bytes(), original)
+
 if __name__ == '__main__':
     unittest.main()

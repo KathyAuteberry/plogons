@@ -19,6 +19,8 @@ its ZIP, then checks out this repository's master and runs:
 The updater verifies ZIP CRC/identity/API metadata and constructs exact HTTPS GitHub release
 URLs under KathyAuteberry/FluffySim, matching tag and asset versions. CI downloads that
 asset before updating; manual operators must do the same, not supply an unverified local build.
+Other plugins use `--plugin <InternalName>` (allow-list in update_manifest.py: FluffySim, the
+default, and Kotodama from KathyAuteberry/Kotodama); each may only publish from its own releases.
 No downgrades; equal versions must have identical metadata. It atomically replaces the local
 JSON; cross-process writers must be serialized. CI retries rejected pushes by fetching and
 recomputing, preserving concurrent entries. Never force-push manifest recovery.

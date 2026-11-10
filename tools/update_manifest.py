@@ -1,4 +1,4 @@
-"""Update only FluffySim from a published release ZIP; no network or publication."""
+"""Update one plugin's entry from its published release ZIP; no network or publication."""
 import argparse
 import json
 import os
@@ -9,22 +9,31 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 
+# Allow-list: InternalName -> GitHub repository whose releases host "<InternalName>-<version>.zip".
+# Only these plugins can be published, and only from their own repository's releases.
+PLUGINS = {
+    'FluffySim': 'KathyAuteberry/FluffySim',
+    'Kotodama': 'KathyAuteberry/Kotodama',
+}
 
-def update(archive, version):
+
+def update(archive, version, plugin='FluffySim'):
+    if plugin not in PLUGINS:
+        raise ValueError('Unknown plugin; add it to PLUGINS first')
     if not re.fullmatch(r'(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.0', version):
         raise ValueError('Expected four-part version with revision zero')
     with zipfile.ZipFile(archive) as package:
         if package.testzip() is not None:
             raise ValueError('Corrupt ZIP')
         names = package.namelist()
-        if len(names) != len(set(names)) or 'FluffySim.dll' not in names:
+        if len(names) != len(set(names)) or f'{plugin}.dll' not in names:
             raise ValueError('Missing DLL or duplicate ZIP entries')
-        entry = json.loads(package.read('FluffySim.json'))
-    if (entry.get('Name'), entry.get('InternalName'), entry.get('AssemblyVersion')) != ('FluffySim', 'FluffySim', version):
+        entry = json.loads(package.read(f'{plugin}.json'))
+    if (entry.get('Name'), entry.get('InternalName'), entry.get('AssemblyVersion')) != (plugin, plugin, version):
         raise ValueError('Release identity/version mismatch')
     if not isinstance(entry.get('DalamudApiLevel'), int) or not entry.get('Author') or not entry.get('Description'):
         raise ValueError('Missing Dalamud metadata')
-    url = f'https://github.com/KathyAuteberry/FluffySim/releases/download/v{version}/FluffySim-{version}.zip'
+    url = f'https://github.com/{PLUGINS[plugin]}/releases/download/v{version}/{plugin}-{version}.zip'
     for field in ('DownloadLinkInstall', 'DownloadLinkUpdate', 'DownloadLinkTesting'):
         entry[field] = url
     entry['IsHide'] = False
@@ -37,8 +46,8 @@ def update(archive, version):
     ids = [x['InternalName'] for x in entries]
     if len(ids) != len(set(ids)):
         raise ValueError('Duplicate InternalName')
-    if 'FluffySim' in ids:
-        index = ids.index('FluffySim')
+    if plugin in ids:
+        index = ids.index(plugin)
         previous = entries[index]
         old = previous['AssemblyVersion']
         if tuple(map(int, old.split('.'))) > tuple(map(int, version.split('.'))):
@@ -66,5 +75,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--zip', required=True, type=Path)
     parser.add_argument('--version', required=True)
+    # Defaults to FluffySim so FluffySim's existing release workflow keeps working unchanged.
+    parser.add_argument('--plugin', default='FluffySim', choices=sorted(PLUGINS))
     args = parser.parse_args()
-    update(args.zip, args.version)
+    update(args.zip, args.version, args.plugin)
