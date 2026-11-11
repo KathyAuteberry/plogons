@@ -33,7 +33,7 @@
     "Author": "Kathy Auteberry (fork of EchoXIV by ssalazar217)",
     "Name": "Kotodama",
     "InternalName": "Kotodama",
-    "AssemblyVersion": "1.0.2.0",
+    "AssemblyVersion": "1.0.3.0",
     "Description": "Kotodama is a personal fork of EchoXIV focused on fast, accurate Japanese<->English chat translation for Japanese PF raiding and everyday social chat, powered by a local LLM.\n\nBased on EchoXIV by ssalazar217: https://github.com/ssalazar217/EchoXIV",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/KathyAuteberry/Kotodama",
@@ -52,9 +52,9 @@
     "IconUrl": "https://raw.githubusercontent.com/KathyAuteberry/Kotodama/master/Kotodama/images/icon.png",
     "Punchline": "Japanese<->English chat translation with a local LLM. Fork of EchoXIV.",
     "AcceptsFeedback": false,
-    "DownloadLinkInstall": "https://github.com/KathyAuteberry/Kotodama/releases/download/v1.0.2.0/Kotodama-1.0.2.0.zip",
-    "DownloadLinkUpdate": "https://github.com/KathyAuteberry/Kotodama/releases/download/v1.0.2.0/Kotodama-1.0.2.0.zip",
-    "DownloadLinkTesting": "https://github.com/KathyAuteberry/Kotodama/releases/download/v1.0.2.0/Kotodama-1.0.2.0.zip",
+    "DownloadLinkInstall": "https://github.com/KathyAuteberry/Kotodama/releases/download/v1.0.3.0/Kotodama-1.0.3.0.zip",
+    "DownloadLinkUpdate": "https://github.com/KathyAuteberry/Kotodama/releases/download/v1.0.3.0/Kotodama-1.0.3.0.zip",
+    "DownloadLinkTesting": "https://github.com/KathyAuteberry/Kotodama/releases/download/v1.0.3.0/Kotodama-1.0.3.0.zip",
     "IsHide": false,
     "IsTestingExclusive": false
   }
