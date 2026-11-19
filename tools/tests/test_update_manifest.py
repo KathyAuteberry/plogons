@@ -1,4 +1,6 @@
+import contextlib
 import importlib.util
+import io
 import json
 from pathlib import Path
 import tempfile
@@ -33,34 +35,34 @@ class ManifestTests(unittest.TestCase):
 
     def test_preservation_urls_and_idempotence(self):
         archive = self.archive()
-        module.update(archive, '2.0.0.0')
+        module.release(archive, '2.0.0.0', 'FluffySim')
         original = self.path.read_bytes()
         entries = json.loads(original)
         self.assertEqual(entries[0], self.other)
         self.assertEqual(entries[1]['DownloadLinkInstall'], 'https://github.com/KathyAuteberry/FluffySim/releases/download/v2.0.0.0/FluffySim-2.0.0.0.zip')
-        module.update(archive, '2.0.0.0')
+        module.release(archive, '2.0.0.0', 'FluffySim')
         self.assertEqual(self.path.read_bytes(), original)
 
     def test_downgrade_and_equal_version_replacement_leave_original(self):
-        module.update(self.archive(), '2.0.0.0')
+        module.release(self.archive(), '2.0.0.0', 'FluffySim')
         original = self.path.read_bytes()
-        for version, overrides in [('1.0.0.0', {}), ('2.0.0.0', {'Description': 'Changed'})]:
+        for version, overrides in [('1.0.0.0', {}), ('2.0.0.0', {'DalamudApiLevel': 16})]:
             archive = self.archive(version, **overrides)
             with self.assertRaises(ValueError):
-                module.update(archive, version)
+                module.release(archive, version, 'FluffySim')
             self.assertEqual(self.path.read_bytes(), original)
 
     def test_identity_version_and_schema_rejected(self):
         for overrides in [dict(InternalName='AnoMech'), dict(AssemblyVersion='9.0.0.0'), dict(DalamudApiLevel=None)]:
             original = self.path.read_bytes()
             with self.assertRaises(ValueError):
-                module.update(self.archive(**overrides), '2.0.0.0')
+                module.release(self.archive(**overrides), '2.0.0.0', 'FluffySim')
             self.assertEqual(self.path.read_bytes(), original)
 
     def test_duplicate_entries_rejected(self):
         self.path.write_text(json.dumps([self.other, self.other]))
         with self.assertRaises(ValueError):
-            module.update(self.archive(), '2.0.0.0')
+            module.release(self.archive(), '2.0.0.0', 'FluffySim')
 
 
     def kotodama_archive(self, version='0.1.0.0', **overrides):
@@ -74,7 +76,7 @@ class ManifestTests(unittest.TestCase):
         return path
 
     def test_kotodama_entry_uses_its_own_repository(self):
-        module.update(self.kotodama_archive(), '0.1.0.0', 'Kotodama')
+        module.release(self.kotodama_archive(), '0.1.0.0', 'Kotodama')
         entry = json.loads(self.path.read_text())[1]
         self.assertEqual(entry['InternalName'], 'Kotodama')
         url = 'https://github.com/KathyAuteberry/Kotodama/releases/download/v0.1.0.0/Kotodama-0.1.0.0.zip'
@@ -82,10 +84,10 @@ class ManifestTests(unittest.TestCase):
             self.assertEqual(entry[field], url)
 
     def test_plugins_coexist_and_updates_touch_only_their_entry(self):
-        module.update(self.archive(), '2.0.0.0')
-        module.update(self.kotodama_archive(), '0.1.0.0', 'Kotodama')
+        module.release(self.archive(), '2.0.0.0', 'FluffySim')
+        module.release(self.kotodama_archive(), '0.1.0.0', 'Kotodama')
         before = json.loads(self.path.read_text())
-        module.update(self.archive('2.1.0.0'), '2.1.0.0')
+        module.release(self.archive('2.1.0.0'), '2.1.0.0', 'FluffySim')
         after = json.loads(self.path.read_text())
         self.assertEqual([e['InternalName'] for e in after], ['Other', 'FluffySim', 'Kotodama'])
         self.assertEqual(after[0], self.other)
@@ -96,19 +98,128 @@ class ManifestTests(unittest.TestCase):
         original = self.path.read_bytes()
         for archive, plugin in [(self.kotodama_archive(), 'FluffySim'), (self.archive(), 'Kotodama')]:
             with self.assertRaises(ValueError):
-                module.update(archive, archive.name.startswith('kotodama') and '0.1.0.0' or '2.0.0.0', plugin)
+                module.release(archive, archive.name.startswith('kotodama') and '0.1.0.0' or '2.0.0.0', plugin)
             self.assertEqual(self.path.read_bytes(), original)
 
     def test_unknown_plugin_rejected(self):
         with self.assertRaises(ValueError):
-            module.update(self.archive(), '2.0.0.0', 'EchoXIV')
+            module.release(self.archive(), '2.0.0.0', 'EchoXIV')
 
     def test_kotodama_downgrade_rejected(self):
-        module.update(self.kotodama_archive('0.2.0.0'), '0.2.0.0', 'Kotodama')
+        module.release(self.kotodama_archive('0.2.0.0'), '0.2.0.0', 'Kotodama')
         original = self.path.read_bytes()
         with self.assertRaises(ValueError):
-            module.update(self.kotodama_archive('0.1.0.0'), '0.1.0.0', 'Kotodama')
+            module.release(self.kotodama_archive('0.1.0.0'), '0.1.0.0', 'Kotodama')
         self.assertEqual(self.path.read_bytes(), original)
+
+    def test_release_rerun_keeps_synced_metadata(self):
+        module.release(self.archive(), '2.0.0.0', 'FluffySim')
+        self.source(Description='Newer')
+        module.metadata(self.root, 'FluffySim')
+        synced = self.path.read_bytes()
+        module.release(self.archive(Description='Old'), '2.0.0.0', 'FluffySim')
+        self.assertEqual(self.path.read_bytes(), synced)
+
+    def test_new_release_drops_changelog_of_previous_version(self):
+        module.release(self.archive(), '2.0.0.0', 'FluffySim')
+        self.source()
+        module.metadata(self.root, 'FluffySim')
+        module.release(self.archive('2.1.0.0'), '2.1.0.0', 'FluffySim')
+        self.assertNotIn('Changelog', json.loads(self.path.read_text())[1])
+
+    # metadata mode
+
+    CHANGELOG = (
+        '# FluffySim 2.1.0.0 — next\n\n## Added\n\n- Later.\n\n'
+        '# FluffySim 2.0.0.0 — catgirls\n\n'
+        'Carries 1.9.0.0. Never published.\n\n'
+        '## Changed\n\n'
+        '- **Catgirl party.** Bots appear as Miqo\'te, each distinct. Your character is unchanged.\n'
+        '- Casts run `8.7 s` instead of 9 s. See [the guide](https://example.org).\n'
+        '  Continued line.\n\n'
+        '## Internal\n\n- Refactor.\n\n'
+        '# FluffySim 1.9.0.0\n\n- Old.\n'
+    )
+
+    def source(self, changelog=None, **overrides):
+        self.root = module.ROOT / 'source'
+        (self.root / 'AnoMech').mkdir(parents=True, exist_ok=True)
+        (self.root / 'docs/releases').mkdir(parents=True, exist_ok=True)
+        meta = dict(Name='FluffySim', Author='Kathy', Description='Simulator', Punchline='Practice',
+                    Tags=['dsr'], RepoUrl='https://github.com/KathyAuteberry/FluffySim',
+                    IconUrl='https://raw.githubusercontent.com/KathyAuteberry/FluffySim/master/images/icon.png',
+                    MinimumDalamudVersion='99.0.0.0', AssemblyVersion='9.9.9.0', DalamudApiLevel=99)
+        meta.update(overrides)
+        (self.root / 'AnoMech/FluffySim.json').write_text(json.dumps(meta))
+        (self.root / 'docs/releases/CHANGELOG.md').write_text(changelog or self.CHANGELOG, encoding='utf-8')
+
+    def test_short_changelog(self):
+        self.assertEqual(module.short_changelog(self.CHANGELOG, 'FluffySim', '2.0.0.0'),
+                         'Carries 1.9.0.0.\n\nChanged\n'
+                         "- Catgirl party: Bots appear as Miqo'te, each distinct.\n"
+                         '- Casts run 8.7 s instead of 9 s.')
+
+    def test_short_changelog_rejects_missing_and_empty_entries(self):
+        for text in ('# FluffySim 1.0.0.0\n- a\n', '# FluffySim 2.0.0.0\n\n## Internal\n\n- x\n'):
+            with self.assertRaises(ValueError):
+                module.short_changelog(text, 'FluffySim', '2.0.0.0')
+
+    def test_metadata_updates_only_source_fields_without_version_change(self):
+        module.release(self.archive(), '2.0.0.0', 'FluffySim')
+        before = json.loads(self.path.read_text())[1]
+        self.source()
+        module.metadata(self.root, 'FluffySim')
+        entries = json.loads(self.path.read_text())
+        entry = entries[1]
+        self.assertEqual(entries[0], self.other)
+        self.assertEqual(entry['Author'], 'Kathy')
+        self.assertEqual(entry['Tags'], ['dsr'])
+        self.assertTrue(entry['Changelog'].startswith('Carries 1.9.0.0.'))
+        for field in ('AssemblyVersion', 'DalamudApiLevel', 'DownloadLinkInstall', 'Name', 'InternalName'):
+            self.assertEqual(entry[field], before[field])
+        self.assertNotIn('MinimumDalamudVersion', entry)
+        synced = self.path.read_bytes()
+        module.metadata(self.root, 'FluffySim')
+        self.assertEqual(self.path.read_bytes(), synced)
+
+    def test_metadata_requires_published_entry(self):
+        self.source()
+        with self.assertRaises(ValueError):
+            module.metadata(self.root, 'FluffySim')
+
+    def test_metadata_requires_changelog_for_published_version(self):
+        module.release(self.archive('1.8.0.0'), '1.8.0.0', 'FluffySim')
+        original = self.path.read_bytes()
+        self.source()
+        with self.assertRaises(ValueError):
+            module.metadata(self.root, 'FluffySim')
+        self.assertEqual(self.path.read_bytes(), original)
+
+    def test_metadata_rejects_bad_source(self):
+        module.release(self.archive(), '2.0.0.0', 'FluffySim')
+        original = self.path.read_bytes()
+        for overrides in [dict(Name='AnoMech'), dict(Author=''), dict(Tags='dsr'),
+                          dict(IconUrl='https://example.org/icon.png'),
+                          dict(RepoUrl='https://github.com/KathyAuteberry/FluffySimEvil'),
+                          dict(ImageUrls=['https://raw.githubusercontent.com/Other/x/a.png'])]:
+            self.source(**overrides)
+            with self.assertRaises(ValueError, msg=overrides):
+                module.metadata(self.root, 'FluffySim')
+            self.assertEqual(self.path.read_bytes(), original)
+
+    def test_cli_requires_mode_and_plugin(self):
+        archive = ['--zip', str(self.archive()), '--version', '2.0.0.0']
+        self.source()
+        for argv in (archive + ['--plugin', 'FluffySim'], ['release'] + archive,
+                     ['metadata', '--source', str(self.root)]):
+            with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
+                module.main(argv)
+        self.assertEqual(json.loads(self.path.read_text()), [self.other])
+        module.main(['release', '--plugin', 'FluffySim'] + archive)
+        self.assertEqual(json.loads(self.path.read_text())[1]['AssemblyVersion'], '2.0.0.0')
+        module.main(['metadata', '--plugin', 'FluffySim', '--source', str(self.root)])
+        self.assertIn('Changelog', json.loads(self.path.read_text())[1])
+
 
 if __name__ == '__main__':
     unittest.main()
