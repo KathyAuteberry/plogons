@@ -56,6 +56,7 @@
     "DownloadLinkUpdate": "https://github.com/KathyAuteberry/Kotodama/releases/download/v1.0.4.0/Kotodama-1.0.4.0.zip",
     "DownloadLinkTesting": "https://github.com/KathyAuteberry/Kotodama/releases/download/v1.0.4.0/Kotodama-1.0.4.0.zip",
     "IsHide": false,
-    "IsTestingExclusive": false
+    "IsTestingExclusive": false,
+    "Changelog": "Incoming messages\n- Lines you type yourself (without /tl) are never translated, so a Japanese line of your own no longer gets a [KT] translation.\n- Your own lines in party chat are now recognised too (the party number in front of your name used to hide them)."
   }
 ]
