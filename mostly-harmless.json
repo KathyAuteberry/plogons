@@ -3,7 +3,7 @@
     "Author": "Kathy Auteberry (fork of AnoMech by Anomek)",
     "Name": "FluffySim",
     "InternalName": "FluffySim",
-    "AssemblyVersion": "3.4.6.0",
+    "AssemblyVersion": "3.4.7.0",
     "MinimumDalamudVersion": "15.0.3.5",
     "Description": "Practice FFXIV Ultimate mechanics inside the game, solo with seven simulated party members or together in multiplayer. Covers Dragonsong's Reprise (Elemental) and Futures Rewritten (Mana), plus The Epic of Alexander (Mana), The Omega Protocol P1\u2013P4 (Elemental) and Dancing Mad (Mana) in beta, with God Mode, Pause and Restart for repeated attempts. Based on AnoMech by Anomek and contributors.",
     "ApplicableVersion": "any",
@@ -25,12 +25,12 @@
     "IconUrl": "https://raw.githubusercontent.com/KathyAuteberry/FluffySim/master/images/icon.png",
     "Punchline": "Ultimate practice for DSR, FRU, TEA, TOP and Dancing Mad, solo or multiplayer.",
     "AcceptsFeedback": true,
-    "DownloadLinkInstall": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.6.0/FluffySim-3.4.6.0.zip",
-    "DownloadLinkUpdate": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.6.0/FluffySim-3.4.6.0.zip",
-    "DownloadLinkTesting": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.6.0/FluffySim-3.4.6.0.zip",
+    "DownloadLinkInstall": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.7.0/FluffySim-3.4.7.0.zip",
+    "DownloadLinkUpdate": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.7.0/FluffySim-3.4.7.0.zip",
+    "DownloadLinkTesting": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.7.0/FluffySim-3.4.7.0.zip",
     "IsHide": false,
     "IsTestingExclusive": false,
-    "Changelog": "Changed\n- Catgirl party: Solo bots and every multiplayer seat now appear as female Miqo'te, each with a distinct look, instead of Lalafell.\n\nFixed\n- Local markers in multiplayer: Every player now sees the markers the host's run places, including the Dancing Mad Forsaken self-marks.\n- Apocalypse overlay in multiplayer: The local light and trail overlay in FRU P3 Apocalypse now works for every player, not just the host."
+    "Changelog": "Added\n- Dancing Mad P2: Trine: (Mana \"Yan\", beta).\n- The Omega Protocol P4: Blue Screen: (Elemental, beta).\n\nChanged\n- No headgear on the party: Simulated party members no longer wear hats, so each seat's hair and ears stay visible.\n\nFixed\n- Forsaken matches retail: Dancing Mad P2 Forsaken is now checked against ten retail pulls; its tower, debuff and End timings already matched.\n- Oversampled Wave Cannon positions: In TOP P3, the bot positions now follow four retail pulls instead of the guide's diagram.\n\nKnown issues\n- Trine: retail showed a different burst pattern in each of three pulls, so which triangles burst in which wave is random."
   },
   {
     "Author": "Kathy Auteberry (fork of EchoXIV by ssalazar217)",
