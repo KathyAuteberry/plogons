@@ -3,7 +3,7 @@
     "Author": "Kathy Auteberry (fork of AnoMech by Anomek)",
     "Name": "FluffySim",
     "InternalName": "FluffySim",
-    "AssemblyVersion": "3.4.8.0",
+    "AssemblyVersion": "3.4.9.0",
     "MinimumDalamudVersion": "15.0.3.5",
     "Description": "Practice FFXIV Ultimate mechanics inside the game, solo with seven simulated party members or together in multiplayer. Covers Dragonsong's Reprise (Elemental) and Futures Rewritten (Mana), plus The Epic of Alexander (Mana), The Omega Protocol P1\u2013P4 (Elemental) and Dancing Mad (Mana) in beta, with God Mode, Pause and Restart for repeated attempts. Based on AnoMech by Anomek and contributors.",
     "ApplicableVersion": "any",
@@ -25,12 +25,12 @@
     "IconUrl": "https://raw.githubusercontent.com/KathyAuteberry/FluffySim/master/images/icon.png",
     "Punchline": "Ultimate practice for DSR, FRU, TEA, TOP and Dancing Mad, solo or multiplayer.",
     "AcceptsFeedback": true,
-    "DownloadLinkInstall": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.8.0/FluffySim-3.4.8.0.zip",
-    "DownloadLinkUpdate": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.8.0/FluffySim-3.4.8.0.zip",
-    "DownloadLinkTesting": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.8.0/FluffySim-3.4.8.0.zip",
+    "DownloadLinkInstall": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.9.0/FluffySim-3.4.9.0.zip",
+    "DownloadLinkUpdate": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.9.0/FluffySim-3.4.9.0.zip",
+    "DownloadLinkTesting": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.9.0/FluffySim-3.4.9.0.zip",
     "IsHide": false,
     "IsTestingExclusive": false,
-    "Changelog": "Added\n- Supported encounters page: A new supported encounters page lists every Ultimate's major mechanics by phase, with their Elemental and Mana status (verified, playable or not implemented) and where to find each one in the menu.\n\nFixed\n- Crystallize Time matches retail: FRU P4 Crystallize Time is now checked against 60 retail sequences; nearly all of its timeline already matched."
+    "Changelog": "Added\n- Dancing Mad P3: Elements: (Mana \"Yan\", alpha).\n- Dancing Mad P3: Limit Cut: (Mana, alpha).\n- Dancing Mad P3: Black Hole: (Mana \"Selfmark\", alpha).\n- Choose who tanks Chaos: Every P3 scenario has a Tanks setting: main tank on Exdeath and off-tank on Chaos (default), or the reverse.\n\nFixed\n- Trine main tank spot: The main tank now steps out from Kefka square to the first side of the centre triangle counter-clockwise from north-west.\n\nKnown issues\n- P3 is an alpha."
   },
   {
     "Author": "Kathy Auteberry (fork of EchoXIV by ssalazar217)",
