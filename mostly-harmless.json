@@ -3,7 +3,7 @@
     "Author": "Kathy Auteberry (fork of AnoMech by Anomek)",
     "Name": "FluffySim",
     "InternalName": "FluffySim",
-    "AssemblyVersion": "3.4.10.0",
+    "AssemblyVersion": "3.4.11.0",
     "MinimumDalamudVersion": "15.0.3.5",
     "Description": "Practice FFXIV Ultimate mechanics inside the game, solo with seven simulated party members or together in multiplayer. Covers Dragonsong's Reprise (Elemental) and Futures Rewritten (Mana), plus The Epic of Alexander (Mana), The Omega Protocol P1\u2013P4 (Elemental) and Dancing Mad (Mana) in beta, with God Mode, Pause and Restart for repeated attempts. Based on AnoMech by Anomek and contributors.",
     "ApplicableVersion": "any",
@@ -25,12 +25,12 @@
     "IconUrl": "https://raw.githubusercontent.com/KathyAuteberry/FluffySim/master/images/icon.png",
     "Punchline": "Ultimate practice for DSR, FRU, TEA, TOP and Dancing Mad, solo or multiplayer.",
     "AcceptsFeedback": true,
-    "DownloadLinkInstall": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.10.0/FluffySim-3.4.10.0.zip",
-    "DownloadLinkUpdate": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.10.0/FluffySim-3.4.10.0.zip",
-    "DownloadLinkTesting": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.10.0/FluffySim-3.4.10.0.zip",
+    "DownloadLinkInstall": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.11.0/FluffySim-3.4.11.0.zip",
+    "DownloadLinkUpdate": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.11.0/FluffySim-3.4.11.0.zip",
+    "DownloadLinkTesting": "https://github.com/KathyAuteberry/FluffySim/releases/download/v3.4.11.0/FluffySim-3.4.11.0.zip",
     "IsHide": false,
     "IsTestingExclusive": false,
-    "Changelog": "Changed\n- Elements boss positions: Once the Epic and Fated Heroes are assigned, the tanks hold both bosses in the middle.\n- Limit Cut needs a tank LB3: The Cyclones after Vacuum Wave now kill the party unless a tank LB3 covers them.\n- Black Hole follows Yan's tethers and Stomp-a-Mole: With Kefka as north, Attack 1 now pulls the first tether counter-clockwise; the second set stays clockwise, Attack 1 first.\n\nFixed\n- ISSIS invulns are enforced: In Elements the Exdeath tank must invuln the Thunder III buster, and in Black Hole (and in Limit Cut, if chosen) the tank a Thunder III plan names must invuln its set."
+    "Changelog": "Added\n- Time to walk in before the fight starts: Limit Cut and the four DSR P2 scenarios (Strength of the Ward 1 and 2, Sanctity of the Ward 1 and 2) now give you three seconds before anything happens, so you can reach your opening spot.\n\nChanged\n- Limit Cut timed to retail: Limit Cut now follows our first retail pull that reached it.\n- Limit Cut Thunder III asks for realistic mitigation: Its first hit now passes on Rampart and two short mitigations instead of needing a 40% cooldown on top.\n\nKnown issues\n- P3 is still an alpha."
   },
   {
     "Author": "Kathy Auteberry (fork of EchoXIV by ssalazar217)",
